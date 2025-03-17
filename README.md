@@ -1,0 +1,1 @@
+# industrial-accident-insurance
