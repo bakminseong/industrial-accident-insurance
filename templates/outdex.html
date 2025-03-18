@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>숨참기 대결</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>숨참기 대결</h1>
+    <p id="status">게임을 시작하세요!</p>
+
+    <button id="startGameBtn">게임 시작</button>
+    <button id="joinGameBtn">게임 참가 (ID: 1234)</button>
+    <button id="breathDataBtn">숨 참기 시작 (30초)</button>
+
+    <script>
+        const socket = io('http://192.168.1.20:5000');  // 서버 주소
+
+        // 서버로부터의 메시지를 처리
+        socket.on('game_update', function(data) {
+            document.getElementById('status').textContent = data.message;
+        });
+
+        socket.on('game_error', function(data) {
+            document.getElementById('status').textContent = data.message;
+        });
+
+        socket.on('game_result', function(data) {
+            document.getElementById('status').textContent = data.message;
+        });
+
+        // 게임 시작 버튼 클릭 이벤트
+        document.getElementById('startGameBtn').onclick = function() {
+            socket.emit('start_game');
+        };
+
+        // 게임 참가 버튼 클릭 이벤트
+        document.getElementById('joinGameBtn').onclick = function() {
+            socket.emit('join_game', {
+                game_id: "1234",  // 게임 ID
+                player_id: "Player 1"  // 플레이어 ID
+            });
+        };
+
+        // 숨참기 데이터 전송 버튼 클릭 이벤트
+        document.getElementById('breathDataBtn').onclick = function() {
+            let breathDuration = 30;  // 예시로 30초 숨참기
+            socket.emit('breath_data', {
+                game_id: "1234",  // 게임 ID
+                player_id: "Player 1",  // 플레이어 ID
+                breath_duration: breathDuration  // 숨참기 시간
+            });
+        };
+    </script>
+</body>
+</html>
